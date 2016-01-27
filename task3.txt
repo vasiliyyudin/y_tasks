@@ -1,0 +1,16 @@
+SELECT
+  type, value
+FROM data AS main_data
+WHERE date = (SELECT MAX(date) FROM data AS sec_data WHERE sec_data.type = main_data.type)
+
+или
+
+(SELECT type, value FROM data WHERE type = 'photo' ORDER BY date DESC LIMIT 1)
+UNION ALL
+(SELECT type, value FROM data WHERE type = 'review' ORDER BY date DESC LIMIT 1)
+UNION ALL
+(SELECT type, value FROM data WHERE type = 'image' ORDER BY date DESC LIMIT 1)
+
+
+Если значений в один день много и нужно выбрать максимальное, то вместо "value" в селектах надо подставить "MAX(value) AS value",
+после WHERE в первом случае добавить "GROUP BY type", а во втором GROUP BY date
